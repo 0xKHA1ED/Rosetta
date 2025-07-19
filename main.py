@@ -9,6 +9,7 @@ from utils.scraping_utils import log_skipped_url
 from src.scraper import scraping_url
 from utils.file_utils import load_json_data
 from src.classify import classify_text
+from utils.classification_utils import get_most_likely_categories
 
 
 def run_application(config):
@@ -67,8 +68,10 @@ def run_application(config):
             if item.get('content'):
                 # Get the classification for the item's content
                 classification_result = classify_text(item['content'], labels)
-                item['classification'] = classification_result
-                print(f"Classified '{item['title'][:40]}...' as: {classification_result}")
+                most_likely_categories = get_most_likely_categories(classification_result, n=3)
+                item['classification'] = most_likely_categories
+                print(f"Classified '{item['title'][:40]}...' as: {most_likely_categories}")
+
         # Save the classified data back to the file
         with open(config['scraped_data_file_path'], 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
