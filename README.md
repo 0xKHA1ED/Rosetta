@@ -6,8 +6,9 @@ Rosetta is a Python-based web scraper that extracts URLs from a chat log, fetche
 
 - **URL Extraction**: Automatically extracts and organizes URLs from a specified chat log file.
 - **Content Scraping**: Uses the Jina AI reader API (`https://r.jina.ai/`) to scrape the title and main content of web pages.
-- **Data Storage**: Saves the scraped data (URL, title, content) in a clean, structured JSON format.
-- **Configurable**: Easily configure file paths, domains to skip, and scraping limits through a `config.json` file.
+- **Content Classification**: Automatically classifies the scraped content into predefined categories using the Jina AI classification API.
+- **Data Storage**: Saves the scraped data (URL, title, content, and classification) in a clean, structured JSON format.
+- **Configurable**: Easily configure file paths, domains to skip, scraping limits, and classification labels through a `config.json` file.
 - **Error Handling**: Logs skipped domains, failed requests, and other errors for easier debugging.
 - **Environment Variable Support**: Securely uses a `JINA_API_KEY` from environment variables for API authentication.
 
@@ -52,7 +53,14 @@ pip install -r requirements.txt
         "youtube.com",
         "youtu.be"
       ],
-      "max_scraped_items": 100
+      "max_scraped_items": 100,
+      "classification_labels": [
+        "Technology",
+        "Health",
+        "Finance",
+        "Art",
+        "Science"
+      ]
     }
     ```
 
@@ -66,7 +74,9 @@ pip install -r requirements.txt
 3.  The application will:
     - Read the chat log and extract URLs.
     - Save the organized URLs to the path specified in `output_file_path`.
-    - Scrape each URL and save the content to `scraped_data_file_path`.
+    - Scrape each URL and save the content.
+    - Classify the scraped content based on the labels in your configuration.
+    - Save the final data, including classifications, to `scraped_data_file_path`.
 
 ## Configuration
 
@@ -77,3 +87,4 @@ The `config.json` file allows you to customize the application's behavior:
 -   `scraped_data_file_path`: Path to save the final scraped data in JSON format.
 -   `skip_domains`: A list of domains to ignore during scraping.
 -   `max_scraped_items`: The maximum number of URLs to scrape before stopping.
+-   `classification_labels`: A list of strings representing the categories to use for classifying the scraped content.
