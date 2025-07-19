@@ -36,7 +36,7 @@ def run_application(config):
     success_count = 0
     for url in all_urls:
         domain = urlparse(url).netloc
-        if domain in config['skip_domains']:
+        if any(skip_keyword in domain for skip_keyword in config['skip_domains']):
             log_skipped_url(url)
             logging.info(f"Skipping domain: {domain}")
             continue
