@@ -2,7 +2,7 @@ import os
 import requests
 
 
-def classify_text(text, config):
+def classify_text(text, labels):
     """
     Classifies a list of text inputs using the Jina API.
     """
@@ -21,7 +21,7 @@ def classify_text(text, config):
     data = {
         "model": "jina-embeddings-v3",
         "input": [text],
-        "labels": config.get('classification_labels', ['Unclassified'])
+        "labels": labels
     }
 
     response = requests.post(url, headers=headers, json=data)

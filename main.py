@@ -57,12 +57,16 @@ def run_application(config):
     # Classifying scraped content
     if success_count > 0:
         logging.info(f"Classifying {success_count} scraped items.")
+
+        # Load classification labels from config
+        labels = config.get('classification_labels', [])
+
         data = load_json_data(config['scraped_data_file_path'])
         for item in data:
             # Check if there is content to classify
             if item.get('content'):
                 # Get the classification for the item's content
-                classification_result = classify_text(item['content'])
+                classification_result = classify_text(item['content'], labels)
                 item['classification'] = classification_result
                 print(f"Classified '{item['title'][:40]}...' as: {classification_result}")
         # Save the classified data back to the file
