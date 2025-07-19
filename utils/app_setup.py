@@ -9,7 +9,7 @@ def setup_logging():
     This should be the first function called.
     """
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging.WARNING,
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
 
