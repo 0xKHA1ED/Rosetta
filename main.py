@@ -37,11 +37,11 @@ def run_application(config):
     for url in all_urls:
         domain = urlparse(url).netloc
         if any(skip_keyword in domain for skip_keyword in config['skip_domains']):
-            log_skipped_url(url)
+            log_skipped_url(url, config)
             logging.info(f"Skipping domain: {domain}")
             continue
 
-        if scraping_url(url, config['scraped_data_file_path']):
+        if scraping_url(url, config):
             logging.info(f"Successfully scraped: {url}")
             success_count += 1
         else:

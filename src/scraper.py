@@ -5,15 +5,15 @@ import os
 from utils.scraping_utils import log_failed_url
 
 
-def save_data_as_json_list(item_dict, output_file='scraped_data.json'):
+def save_data_as_json_list(item_dict, config):
     """Reads the JSON file, appends a new item, and writes it back."""
     data = []
     try:
-        with open(output_file, 'r', encoding='utf-8') as json_file:
+        with open(config['scraped_data_file_path'], 'r', encoding='utf-8') as json_file:
             data = json.load(json_file)
             # Ensure it's a list
             if not isinstance(data, list):
-                logging.warning(f"{output_file} is not a list. Starting fresh.")
+                logging.warning(f"{config['scraped_data_file_path']} is not a list. Starting fresh.")
                 data = []
     except (FileNotFoundError, json.JSONDecodeError):
         # File doesn't exist or is empty/corrupt, start with an empty list
@@ -21,11 +21,11 @@ def save_data_as_json_list(item_dict, output_file='scraped_data.json'):
 
     data.append(item_dict)
 
-    with open(output_file, 'w', encoding='utf-8') as json_file:
+    with open(config['scraped_data_file_path'], 'w', encoding='utf-8') as json_file:
         json.dump(data, json_file, ensure_ascii=False, indent=4)
 
 
-def scraping_url(url, output_file='scraped_data.json'):
+def scraping_url(url, config):
     api_key = os.getenv('JINA_API_KEY')
     if not api_key:
         logging.critical("Error: JINA_API_KEY environment variable is not set.")
@@ -66,12 +66,12 @@ def scraping_url(url, output_file='scraped_data.json'):
 
     except requests.exceptions.RequestException as err:
         logging.error(f"Request failed for {url}: {err}")
-        log_failed_url(url)
+        log_failed_url(url, config)
 
     # Handle cases where the response is not valid JSON
     except json.JSONDecodeError:
         logging.error(f"Failed to decode JSON for {url}. Saving raw text content.")
-        log_failed_url(url)
+        log_failed_url(url, config)
         # Create a fallback dictionary with the raw text
         item_dict = {
             'url': url,
@@ -80,7 +80,7 @@ def scraping_url(url, output_file='scraped_data.json'):
         }
 
     if item_dict:
-        save_data_as_json_list(item_dict, output_file)
+        save_data_as_json_list(item_dict, config)
         # logging.info(f"Successfully saved data for: {url}")
         return True
     return False
