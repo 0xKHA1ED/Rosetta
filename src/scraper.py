@@ -61,7 +61,8 @@ def scraping_url(url, config):
         item_dict = {
             'url': url,
             'title': title,
-            'content': content
+            'content': content,
+            'classification': 'Unclassified'
         }
 
     except requests.exceptions.RequestException as err:
@@ -76,7 +77,8 @@ def scraping_url(url, config):
         item_dict = {
             'url': url,
             'title': "No title available",
-            'content': response.text
+            'content': response.text,
+            'classification': "Unclassified"
         }
 
     if item_dict:

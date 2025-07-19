@@ -1,11 +1,14 @@
 import logging
 import random
+import json
 from urllib.parse import urlparse
 from utils import app_setup
 from utils.file_utils import read_chat_log, save_organized_urls
 from utils.url_utils import extract_urls
 from utils.scraping_utils import log_skipped_url
 from src.scraper import scraping_url
+from utils.file_utils import load_json_data
+from src.classify import classify_text
 
 
 def run_application(config):
@@ -50,6 +53,22 @@ def run_application(config):
         if success_count >= config['max_scraped_items']:
             logging.info(f"Reached maximum scraped items limit: {config['max_scraped_items']}. Stopping.")
             break
+
+    # Classifying scraped content
+    if success_count > 0:
+        logging.info(f"Classifying {success_count} scraped items.")
+        data = load_json_data(config['scraped_data_file_path'])
+        for item in data:
+            # Check if there is content to classify
+            if item.get('content'):
+                # Get the classification for the item's content
+                classification_result = classify_text(item['content'])
+                item['classification'] = classification_result
+                print(f"Classified '{item['title'][:40]}...' as: {classification_result}")
+        # Save the classified data back to the file
+        with open(config['scraped_data_file_path'], 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+        logging.info("Classification complete and results saved.")
 
 
 if __name__ == "__main__":

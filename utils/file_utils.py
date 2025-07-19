@@ -1,5 +1,6 @@
 import os
 import logging
+import json
 
 
 def read_chat_log(chat_log_path):
@@ -56,3 +57,19 @@ def read_organized_urls(file_path='organized_urls.txt'):
     with open('organized_urls.txt', 'r', encoding='utf-8') as file:
         urls = file.readlines()
     return urls
+
+
+def load_json_data(input_filepath):
+    """
+    Loads JSON data from the specified input file.
+
+    :param input_filepath: Path to the input JSON file.
+    :return: Parsed JSON data as a list or dictionary.
+    """
+    try:
+        with open(input_filepath, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            return data
+    except FileNotFoundError:
+        print(f"Error: Input file '{input_filepath}' not found.")
+        return
