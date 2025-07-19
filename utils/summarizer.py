@@ -1,5 +1,5 @@
-from google import genai
 import logging
+from google import genai
 
 
 def summarize_text(text, model="gemini-2.5-flash"):
@@ -15,9 +15,9 @@ def summarize_text(text, model="gemini-2.5-flash"):
     """
     try:
         client = genai.Client()
-        response = client.generate_text(
+        response = client.models.generate_content(
             model=model,
-            prompt=f"Summarize the following text to a maximum of 500 words:\n\n{text}"
+            contents=f"Summarize the following text to a maximum of 50 words:\n\n{text}"
         )
         return response.text.strip()
     except Exception as e:
