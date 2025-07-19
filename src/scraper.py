@@ -38,6 +38,8 @@ def scraping_url(url, output_file='scraped_data.json'):
 
     jina_url = f"https://r.jina.ai/{url}"
 
+    item_dict = {}
+
     try:
         # Make the GET request with a timeout to prevent indefinite hanging
         response = requests.get(jina_url, headers=headers, timeout=30)
