@@ -79,6 +79,6 @@ def scraping_url(url, output_file='scraped_data.json'):
 
     if item_dict:
         save_data_as_json_list(item_dict, output_file)
-        logging.info(f"Successfully saved data for: {url}")
+        # logging.info(f"Successfully saved data for: {url}")
         return True
     return False

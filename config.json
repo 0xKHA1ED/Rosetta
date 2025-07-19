@@ -5,12 +5,13 @@
     "pinterest", "reddit", "linkedin",
     "tumblr", "flickr", "vimeo",
     "dailymotion", "amazon", "imdb",
-    "spotify", "discord", "dribbble"
+    "spotify", "discord", "dribbble",
+    "reddit", "facebook"
   ],
     "chat_log_file_path": "data/chat_log.txt",
     "output_file_path": "output/extracted_urls.txt",
     "failed_urls_file_path": "output/failed_urls.txt",
     "skipped_urls_file_path": "config/skipped_urls.txt",
     "scraped_data_file_path": "output/scraped_data.json",
-    "max_scraped_items": 100
+    "max_scraped_items": 10
 }

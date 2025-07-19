@@ -1,4 +1,6 @@
 import logging
+import random
+from urllib.parse import urlparse
 from utils import app_setup
 from utils.file_utils import read_chat_log, save_organized_urls
 from utils.url_utils import extract_urls
@@ -26,23 +28,28 @@ def run_application(config):
         return
     logging.info(f"Organized URLs saved to {output_filepath}.")
 
+    all_urls = [url for urls_list in organized_urls.values() for url in urls_list]
+    random.shuffle(all_urls)
+    logging.info("URL list has been randomized.")
+
     # Scraping URLs
     success_count = 0
-    for domain, urls in organized_urls.items():
+    for url in all_urls:
+        domain = urlparse(url).netloc
         if domain in config['skip_domains']:
-            log_skipped_url(domain)
+            log_skipped_url(url)
             logging.info(f"Skipping domain: {domain}")
             continue
-        logging.info(f"Processing domain: {domain}")
-        for url in urls:
-            if scraping_url(url, config['scraped_data_file_path']):
-                logging.info(f"Successfully scraped: {url}")
-                success_count += 1
-            else:
-                logging.error(f"Failed to scrape: {url}")
-            if success_count >= config['max_scraped_items']:
-                logging.info(f"Reached maximum scraped items limit: {config['max_scraped_items']}. Stopping.")
-                break
+
+        if scraping_url(url, config['scraped_data_file_path']):
+            logging.info(f"Successfully scraped: {url}")
+            success_count += 1
+        else:
+            logging.error(f"Failed to scrape: {url}")
+
+        if success_count >= config['max_scraped_items']:
+            logging.info(f"Reached maximum scraped items limit: {config['max_scraped_items']}. Stopping.")
+            break
 
 
 if __name__ == "__main__":
