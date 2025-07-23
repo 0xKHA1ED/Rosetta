@@ -26,7 +26,7 @@
   "failed_urls_file_path": "output/failed_urls.txt",
   "skipped_urls_file_path": "output/skipped_urls.txt",
   "scraped_data_file_path": "output/scraped_data.json",
-  "max_scraped_items": 10,
+  "max_scraped_items": 100,
   "max_tokens_per_item": 7168,
   "classification_labels": [
     "Artificial Intelligence",

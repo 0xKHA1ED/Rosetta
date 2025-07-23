@@ -1,6 +1,7 @@
 import logging
 import random
 import json
+import time
 from urllib.parse import urlparse
 from utils import app_setup
 from utils.file_utils import read_chat_log, save_organized_urls
@@ -10,7 +11,7 @@ from src.scraper import scraping_url
 from utils.file_utils import load_json_data
 from src.classify import classify_text
 from utils.classification_utils import get_most_likely_categories
-from utils.token_count import count_tokens_with_tiktoken
+# from utils.token_count import count_tokens_with_tiktoken
 from utils.summarizer import summarize_text
 
 
@@ -66,25 +67,26 @@ def run_application(config):
 
         data = load_json_data(config['scraped_data_file_path'])
         for item in data:
+            if item['summarized'] is True:
+                continue
+
             # Check if there is content to classify
             content = item.get('content', '')
             if content:
-                # Count tokens in the content
-                token_count = count_tokens_with_tiktoken(content)
-
-                if token_count > config['max_tokens_per_item']:
-                    summarized_content = summarize_text(content)
-                    if summarized_content:
-                        item['content'] = summarized_content
-                        logging.info(f"Content for {item['url']} summarized due to token limit.")
-                    else:
-                        logging.warning(f"Failed to summarize content for {item['url']}. Skipping classification.")
-                        continue
+                summarized_content = summarize_text(content)
+                if summarized_content:
+                    item['content'] = summarized_content
+                    item['summrized'] = True
+                    logging.info(f"Content for {item['url']} summarized due to token limit.")
+                else:
+                    logging.warning(f"Failed to summarize content for {item['url']}. Skipping classification.")
+                    continue
 
                 classification_result = classify_text(item['content'], labels)
                 most_likely_categories = get_most_likely_categories(classification_result, n=3)
                 item['classification'] = most_likely_categories
                 print(f"Classified '{item['title'][:40]}...' as: {most_likely_categories}")
+            time.sleep(1)
 
         # Save the classified data back to the file
         with open(config['scraped_data_file_path'], 'w', encoding='utf-8') as f:

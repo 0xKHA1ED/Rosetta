@@ -33,7 +33,9 @@ def scraping_url(url, config):
 
     headers = {
         'Authorization': f'Bearer {api_key}',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        "X-Md-Link-Style": "discarded",
+        "X-Retain-Images": "none"
     }
 
     jina_url = f"https://r.jina.ai/{url}"
@@ -62,7 +64,8 @@ def scraping_url(url, config):
             'url': url,
             'title': title,
             'content': content,
-            'classification': 'Unclassified'
+            'classification': 'Unclassified',
+            'summarized': False
         }
 
     except requests.exceptions.RequestException as err:

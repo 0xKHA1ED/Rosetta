@@ -15,9 +15,11 @@ def summarize_text(text, model="gemini-2.5-flash"):
     """
     try:
         client = genai.Client()
+        with open('utils/prompt.txt', 'r') as f:
+            prompt = f.read()
         response = client.models.generate_content(
             model=model,
-            contents=f"Summarize the following text to a maximum of 50 words:\n\n{text}"
+            contents=f"{prompt}\n\n{text}",
         )
         return response.text.strip()
     except Exception as e:
